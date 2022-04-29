@@ -31,4 +31,4 @@ set(BUILD_SHARED_LIBS OFF)
 
 
 add_executable(mono_vo  ${SOURCES} ${HEADERS})
-target_link_libraries(mono_vo ${OpenCV_LIBS} cao)
+target_link_libraries(mono_vo ${OpenCV_LIBS} thor)

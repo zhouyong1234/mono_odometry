@@ -4,6 +4,23 @@ Simply visual odometry using for tracking moving objects, such as *robots, drone
 
 
 
+## 使用自己的数据集进行姿态估计
+
+## Run
+```
+cd ~/mono_odometry
+mkdir build
+cd build
+cmake ..
+make
+./mono_vo ~/test/images
+```
+
+![](result.png)
+
+
+
+
 ## Blog
 
 For reference, there are 2 splicity blog tells how this done.

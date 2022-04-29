@@ -54,8 +54,15 @@ void FeatureTracker::track(cv::Mat imageRef, cv::Mat imageCur, std::vector<cv::P
 void FeatureTracker::detect(cv::Mat image, std::vector<cv::Point2f> &pxVec) {
     std::vector<cv::KeyPoint> keyPoints;
 
-    int fastThreshold = 20;
+    int fastThreshold = 30;
     bool nms = true;
     cv::FAST(image, keyPoints, fastThreshold, nms);
+
+    //-- 绘制特征点
+	cv::Mat img_keypoints; 
+	cv::drawKeypoints(image, keyPoints, img_keypoints, cv::Scalar(0, 255, 0), cv::DrawMatchesFlags::DEFAULT); 
+	//-- 显示特征点
+	cv::imshow("Keypoints", img_keypoints);
+
     cv::KeyPoint::convert(keyPoints, pxVec);
 }

@@ -22,9 +22,17 @@ VisualOdometry::~VisualOdometry() {
 // add an image to solving pool
 void VisualOdometry::addImage(const cv::Mat &img, int frameID) {
 
+    // std::cout << img.empty() << std::endl;
+    // std::cout << img.type() << std::endl;
+    // std::cout << img.cols << std::endl;
+    // std::cout << camera->width() << std::endl;
+
+
     if (img.empty() || img.type() != CV_8UC1 || img.cols != camera->width()) {
         throw std::runtime_error("Frame: image not same size as camera.");
     }
+
+    // std::cout << frameStage_ << std::endl;
 
     newFrame_ = img;
     bool res = true;
@@ -63,19 +71,22 @@ bool VisualOdometry::processSecondFrame() {
 }
 
 bool VisualOdometry::processFrame(int frameID) {
-    double scale = 1.00;
+    double scale = 0.15;
     this->featureTracker_.track(lastFrame_, newFrame_, pxRef_, pxCur_, disparities_);
     cv::Mat E, R, t, mask;
     E = cv::findEssentialMat(pxCur_, pxRef_, focal_, pp_, cv::RANSAC, 0.999, 1.0, mask);
     cv::recoverPose(E, pxCur_, pxRef_, R, t, focal_, pp_, mask);
 
+    // std::cout << "t: " << t.t() << std::endl;
+
     scale = getAbsoluteScale(frameID);
     // if scale less than 0.1, R and t maybe wrong, keep last value
-    if (scale > 0.1) {
+    if (scale >= 0.15) {
         curT_ = curT_ + scale*(curR_*t);
         curR_ = R*curR_;
     }
     if (pxRef_.size() < kMinNumFeature) {
+        // std::cout << "detect track" << std::endl;
         this->featureTracker_.detect(newFrame_, pxRef_);
         this->featureTracker_.track(lastFrame_, newFrame_, pxRef_, pxCur_, disparities_);
 
@@ -85,5 +96,5 @@ bool VisualOdometry::processFrame(int frameID) {
 }
 
 double VisualOdometry::getAbsoluteScale(int frameID) {
-    return 1;
+    return 0.15;
 }
